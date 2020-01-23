@@ -23,6 +23,32 @@ class MyTestCase(unittest.TestCase):
         # Expected value vs. Actual value
         self.assertEqual("Welcome Admin", welcome_text)
 
+    def test_invalid_password(self):
+        driver = self.driver
+        driver.find_element_by_id("txtUsername").send_keys("Admin")
+        driver.find_element_by_id("txtPassword").send_keys("Admin123")
+        driver.find_element_by_id("btnLogin").click()
+
+        sleep(2)
+
+        error_text = driver.find_element_by_id("spanMessage").text
+
+        # Expected value vs. Actual value
+        self.assertEqual("Invalid credentials", error_text)
+
+    def test_empty_password(self):
+        driver = self.driver
+        driver.find_element_by_id("txtUsername").send_keys("Admin")
+        driver.find_element_by_id("txtPassword").send_keys("")
+        driver.find_element_by_id("btnLogin").click()
+
+        sleep(2)
+
+        error_text = driver.find_element_by_id("spanMessage").text
+
+        # Expected value vs. Actual value
+        self.assertEqual("Password cannot be empty", error_text)
+
 
 if __name__ == '__main__':
     unittest.main()
