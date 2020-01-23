@@ -9,6 +9,8 @@ class MyTestCase(unittest.TestCase):
         self.driver = webdriver.Chrome("/Users/igor/Desktop/Docs/Git/Python/Selenium-Python-HRM/chromedriver/chromedriver")
         self.driver.get("https://opensource-demo.orangehrmlive.com/")
 
+    def tearDown(self):
+        self.driver.quit()
 
     def test_valid_login(self):
         driver = self.driver
@@ -31,10 +33,10 @@ class MyTestCase(unittest.TestCase):
 
         sleep(2)
 
-        error_text = driver.find_element_by_id("spanMessage").text
+        warning_text = driver.find_element_by_id("spanMessage").text
 
         # Expected value vs. Actual value
-        self.assertEqual("Invalid credentials", error_text)
+        self.assertEqual("Invalid credentials", warning_text)
 
     def test_empty_password(self):
         driver = self.driver
@@ -44,10 +46,10 @@ class MyTestCase(unittest.TestCase):
 
         sleep(2)
 
-        error_text = driver.find_element_by_id("spanMessage").text
+        warning_text = driver.find_element_by_id("spanMessage").text
 
         # Expected value vs. Actual value
-        self.assertEqual("Password cannot be empty", error_text)
+        self.assertEqual("Password cannot be empty", warning_text)
 
 
 if __name__ == '__main__':
