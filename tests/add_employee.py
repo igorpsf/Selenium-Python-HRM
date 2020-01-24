@@ -3,6 +3,7 @@ import unittest
 from time import sleep
 
 from selenium import webdriver
+from selenium.webdriver.support.select import Select
 
 
 class AddEmployee(unittest.TestCase):
@@ -15,10 +16,16 @@ class AddEmployee(unittest.TestCase):
         self.driver.quit()
 
     def test_something(self):
-        # Login
 
         empId = randint(100000, 999999)
+        expected_job_title = "CEO"
+        expected_employment_status = "Full Time"
+        expected_first_name = "Elon"
+        expected_last_name = "Musk"
+
         driver = self.driver
+
+        # Login
         driver.find_element_by_id("txtUsername").send_keys("admin")
         driver.find_element_by_id("txtPassword").send_keys("password")
         driver.find_element_by_id("btnLogin").click()
@@ -35,14 +42,22 @@ class AddEmployee(unittest.TestCase):
         # TODO IP: may need to come back and do "something"
 
         # Enter First and Last name
-        driver.find_element_by_id("firstName").send_keys("Elon")
-        driver.find_element_by_id("lastName").send_keys("Musk")
+        driver.find_element_by_id("firstName").send_keys(expected_first_name)
+        driver.find_element_by_id("lastName").send_keys(expected_last_name)
 
         # Enter and remember the EmpId
         driver.find_element_by_id("employeeId").clear()
         driver.find_element_by_id("employeeId").send_keys(empId)
+        sleep(1)
 
         # Save the Employee
+        driver.find_element_by_id("btnSave").click()
+
+        driver.find_element_by_link_text("Job").click()
+        driver.find_element_by_id("btnSave").click()
+
+        Select(driver.find_element_by_id("job_job_title")).select_by_visible_text(expected_job_title)
+        Select(driver.find_element_by_id("job_emp_status")).select_by_visible_text(expected_employment_status)
         driver.find_element_by_id("btnSave").click()
 
         # Go to PIM page
@@ -54,16 +69,21 @@ class AddEmployee(unittest.TestCase):
         driver.find_element_by_id("searchBtn").click()
 
         # Expected: 1 record back
-        lst = driver.find_elements_by_xpath("//td[3]/a")
-        print(len(lst))
-        self.assertTrue(len(lst) == 1)
+        lst = len(driver.find_elements_by_xpath("//td[3]/a"))
+        print(lst)
+        self.assertTrue(lst == 1)
 
         # Expected Correct Name and EmpId
         firstName = driver.find_element_by_xpath("//td[3]/a").text
         lastName = driver.find_element_by_xpath("//td[4]/a").text
+        job_title = driver.find_element_by_xpath("//td[5]").text
+        employment_status = driver.find_element_by_xpath("//td[6]").text
 
-        self.assertEqual("Elon", firstName)
-        self.assertEqual("Musk", lastName)
+        message = "Expected the table to contains first name '{0}' but instead the value was '{1}'"
+        self.assertEqual(expected_first_name, firstName, message.format(expected_first_name, firstName))
+        self.assertEqual(expected_last_name, lastName, message.format(expected_last_name, lastName))
+        self.assertEqual(expected_job_title, job_title, message.format(expected_job_title, job_title))
+        self.assertEqual(employment_status, employment_status, message.format(employment_status, employment_status))
 
 
 if __name__ == '__main__':
