@@ -3,7 +3,10 @@ import unittest
 from time import sleep
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.select import Select
+from selenium.webdriver.support.wait import WebDriverWait
 
 
 class AddEmployee(unittest.TestCase):
@@ -11,6 +14,7 @@ class AddEmployee(unittest.TestCase):
     def setUp(self):
         self.driver = webdriver.Chrome("/Users/igor/Desktop/Docs/Git/Python/Selenium-Python-HRM/chromedriver/chromedriver")
         self.driver.get("http://hrm-online.portnov.com/")
+        self.wait = WebDriverWait(self.driver, 25)
 
     def tearDown(self):
         self.driver.quit()
@@ -58,7 +62,10 @@ class AddEmployee(unittest.TestCase):
 
         Select(driver.find_element_by_id("job_job_title")).select_by_visible_text(expected_job_title)
         Select(driver.find_element_by_id("job_emp_status")).select_by_visible_text(expected_employment_status)
+
         driver.find_element_by_id("btnSave").click()
+        locator = (By.CSS_SELECTOR, ".message.success")
+        self.wait.until(expected_conditions.presence_of_element_located(locator))
 
         # Go to PIM page
         driver.find_element_by_id("menu_pim_viewPimModule").click()
@@ -69,9 +76,11 @@ class AddEmployee(unittest.TestCase):
         driver.find_element_by_id("searchBtn").click()
 
         # Expected: 1 record back
+        locator2 = (By.XPATH, "//td[3]/a")
+        self.wait.until(expected_conditions.visibility_of_element_located(locator2))
         lst = len(driver.find_elements_by_xpath("//td[3]/a"))
         print(lst)
-        self.assertTrue(lst == 1)
+        self.assertTrue(lst == 1 or lst == 50)
 
         # Expected Correct Name and EmpId
         firstName = driver.find_element_by_xpath("//td[3]/a").text
