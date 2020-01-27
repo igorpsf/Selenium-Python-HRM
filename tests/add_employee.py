@@ -1,6 +1,5 @@
 from random import randint
 import unittest
-from time import sleep
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -34,8 +33,6 @@ class AddEmployee(unittest.TestCase):
         driver.find_element_by_id("txtPassword").send_keys("password")
         driver.find_element_by_id("btnLogin").click()
 
-        sleep(2)
-
         welcome_text = driver.find_element_by_id("welcome").text
 
         # Expected value vs. Actual value
@@ -52,7 +49,6 @@ class AddEmployee(unittest.TestCase):
         # Enter and remember the EmpId
         driver.find_element_by_id("employeeId").clear()
         driver.find_element_by_id("employeeId").send_keys(empId)
-        sleep(1)
 
         # Save the Employee
         driver.find_element_by_id("btnSave").click()
