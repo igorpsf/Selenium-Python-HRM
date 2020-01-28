@@ -1,6 +1,9 @@
 import unittest
+from time import sleep
 
 from selenium import webdriver
+
+from steps.common import login
 
 
 class MyTestCase(unittest.TestCase):
@@ -15,10 +18,9 @@ class MyTestCase(unittest.TestCase):
     def test_logo_size_and_location(self):
         driver = self.driver
 
-        # Login
-        driver.find_element_by_id("txtUsername").send_keys("admin")
-        driver.find_element_by_id("txtPassword").send_keys("password")
-        driver.find_element_by_id("btnLogin").click()
+        login(driver)
+
+        sleep(2)
 
         logo_element = driver.find_element_by_xpath("//*[@id='branding']/img")
         #css - driver.find_element_by_css_selector("#branding > img")

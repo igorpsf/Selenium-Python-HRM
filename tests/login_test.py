@@ -3,20 +3,22 @@ import unittest
 from selenium import webdriver
 from time import sleep
 
+from steps.common import login
+
+
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):
         self.driver = webdriver.Chrome("/Users/igor/Desktop/Docs/Git/Python/Selenium-Python-HRM/chromedriver/chromedriver")
-        self.driver.get("https://opensource-demo.orangehrmlive.com/")
+        self.driver.get("http://hrm-online.portnov.com/")
 
     def tearDown(self):
         self.driver.quit()
 
     def test_valid_login(self):
         driver = self.driver
-        driver.find_element_by_id("txtUsername").send_keys("Admin")
-        driver.find_element_by_id("txtPassword").send_keys("admin123")
-        driver.find_element_by_id("btnLogin").click()
+
+        login(driver)
 
         welcome_text = driver.find_element_by_id("welcome").text
 
