@@ -8,7 +8,7 @@ from selenium.webdriver.support import expected_conditions
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from steps.common import login
+from steps.common import login, get_welcome_message
 
 
 class AddEmployee(unittest.TestCase):
@@ -28,29 +28,40 @@ class AddEmployee(unittest.TestCase):
         expected_employment_status = "Full Time"
         expected_first_name = "Elon"
         expected_last_name = "Musk"
+        username = "jb" + str(empId)
 
         driver = self.driver
 
         login(driver)
 
-        sleep(2)
-
-        welcome_text = driver.find_element_by_id("welcome").text
+        welcome_text = get_welcome_message(driver)
 
         # Expected value vs. Actual value
         self.assertEqual("Welcome Admin", welcome_text)
 
         # Click the Add button
-        driver.find_element_by_id("btnAdd").click()
-        # TODO IP: may need to come back and do "something"
+        #self.wait.until(expected_conditions.visibility_of_element_located((By.ID, "btnAdd"))).click()
+        #driver.find_element_by_id("btnAdd").click()
+        WebDriverWait(driver, 2).until(
+            expected_conditions.presence_of_element_located((By.ID, "btnAdd"))).click()
 
         # Enter First and Last name
-        driver.find_element_by_id("firstName").send_keys(expected_first_name)
+        self.wait.until(expected_conditions.visibility_of_element_located((By.ID, "firstName"))).send_keys(expected_first_name)
+        #driver.find_element_by_id("firstName").send_keys(expected_first_name)
         driver.find_element_by_id("lastName").send_keys(expected_last_name)
 
         # Enter and remember the EmpId
         driver.find_element_by_id("employeeId").clear()
         driver.find_element_by_id("employeeId").send_keys(empId)
+
+        # Click Create Login Details checkbox
+        driver.find_element_by_id("chkLogin").click()
+
+        # Wait for the fields to be available
+        # Fill them in
+        self.wait.until(expected_conditions.visibility_of_element_located((By.ID, "user_name"))).send_keys(username)
+        driver.find_element_by_id("user_password").send_keys("password")
+        driver.find_element_by_id("re_password").send_keys("password")
 
         # Save the Employee
         driver.find_element_by_id("btnSave").click()
@@ -91,6 +102,19 @@ class AddEmployee(unittest.TestCase):
         self.assertEqual(expected_job_title, job_title, message.format(expected_job_title, job_title))
         self.assertEqual(employment_status, employment_status, message.format(employment_status, employment_status))
 
+        # Logout
+        driver.find_element_by_id("welcome").click()
+        self.wait.until(expected_conditions.visibility_of_element_located((By.LINK_TEXT, "Logout"))).click()
+
+        # Login
+        login(driver, username)
+
+        # Check welcome message
+        self.assertEqual("Welcome " + expected_first_name , get_welcome_message(driver))
+
+        # Logout
+        driver.find_element_by_id("welcome").click()
+        self.wait.until(expected_conditions.visibility_of_element_located((By.LINK_TEXT, "Logout"))).click()
 
 if __name__ == '__main__':
     unittest.main()

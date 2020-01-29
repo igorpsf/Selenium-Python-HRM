@@ -3,7 +3,7 @@ import unittest
 from selenium import webdriver
 from time import sleep
 
-from steps.common import login
+from steps.common import login, get_welcome_message
 
 
 class MyTestCase(unittest.TestCase):
@@ -20,7 +20,7 @@ class MyTestCase(unittest.TestCase):
 
         login(driver)
 
-        welcome_text = driver.find_element_by_id("welcome").text
+        welcome_text = get_welcome_message(driver)
 
         # Expected value vs. Actual value
         self.assertEqual("Welcome Admin", welcome_text)
