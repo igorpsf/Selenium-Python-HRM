@@ -3,7 +3,7 @@ import unittest
 from selenium import webdriver
 from time import sleep
 
-from steps.common import login, get_welcome_message
+from steps.common import login, get_welcome_message, logout
 
 
 class MyTestCase(unittest.TestCase):
@@ -24,6 +24,8 @@ class MyTestCase(unittest.TestCase):
 
         # Expected value vs. Actual value
         self.assertEqual("Welcome Admin", welcome_text)
+
+        logout(driver)
 
     def test_invalid_password(self):
         driver = self.driver
