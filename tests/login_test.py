@@ -28,6 +28,7 @@ class MyTestCase(unittest.TestCase):
         logout(driver)
 
     def test_invalid_password(self):
+
         driver = self.driver
         driver.find_element_by_id("txtUsername").send_keys("Admin")
         driver.find_element_by_id("txtPassword").send_keys("Admin123")
