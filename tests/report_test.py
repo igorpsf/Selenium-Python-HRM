@@ -44,6 +44,7 @@ class ReportTestCase(unittest.TestCase):
         login(driver)
 
         # Click on the report tab
+        driver.find_element_by_id("menu_pim_viewPimModule").click()
         driver.find_element_by_id("menu_core_viewDefinedPredefinedReports").click()
 
         # Click on the Add button

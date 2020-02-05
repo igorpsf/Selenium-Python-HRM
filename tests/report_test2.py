@@ -7,7 +7,12 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.select import Select
 from selenium.webdriver.support.wait import WebDriverWait
 
-from steps.common import login
+from pages import login_page
+from pages.login_page import LoginPage
+from pages.new_report_page import NewReportPage
+from pages.pim_page import PIMPage
+from pages.report_run_page import ReportRunPage
+from pages.reports_page import ReportsPage
 
 
 class ReportTestCase(unittest.TestCase):
@@ -17,6 +22,12 @@ class ReportTestCase(unittest.TestCase):
             "/Users/igor/Desktop/Docs/Git/Python/Selenium-Python-HRM/chromedriver/chromedriver")
         self.driver.get("http://hrm-online.portnov.com/")
         self.wait = WebDriverWait(self.driver, 2)
+
+        self.login_page = LoginPage(self.driver)
+        self.pim = PIMPage(self.driver)
+        self.reports = ReportsPage(self.driver)
+        self.new_report = NewReportPage(self.driver)
+        self.report_run = ReportRunPage(self.driver)
 
     def tearDown(self):
         driver = self.driver
@@ -37,8 +48,22 @@ class ReportTestCase(unittest.TestCase):
         self.driver.quit()
 
     def test_create_report(self):
+        report_name = "IP Report #" + str(random.randint(1, 100))
 
-        pass
+        self.login_page.login()
+        self.pim.goto_reports()
+        self.reports.add()
+        self.new_report.set_name(report_name)
+        self.new_report.setelect_selection_criteria("Job Title")
+        self.new_report.select_display_field_groups("Personal")
+        self.new_report.enable_display_fields()
+        self.new_report.save()
+        self.reports.search(report_name)
+        # assertion
+        self.reports.run(report_name)
+        report_header = self.report_run.get_report_header()
+        # assertion
+
 
         # report_name = "IP Report #" + str(random.randint(1, 100))
         # self.report_name = report_name
