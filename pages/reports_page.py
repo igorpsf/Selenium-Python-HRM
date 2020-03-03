@@ -1,15 +1,38 @@
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+
+locators = {
+
+    "add_button": (By.ID, "btnAdd"),
+    "search_textfield": (By.ID, "search_search"),
+    "search_button": (By.CLASS_NAME, "searchBtn"),
+    "delete_button": (By.ID, "btnDelete"),
+    "dialog_delete_button": (By.ID, "dialogDeleteBtn")
+}
+
+
 class ReportsPage:
     def __init__(self, driver):
         self.driver = driver
+        self.wait = WebDriverWait(self.driver, 2)
 
     def add(self):
         driver = self.driver
-        driver.find_element_by_id("btnAdd").click()
+        driver.find_element_by_id(locators["add_button"][1]).click()
 
     def search(self, report_name):
-        pass
+        driver = self.driver
+        driver.find_element_by_id(locators["search_textfield"][1]).send_keys(report_name)
+        driver.find_element_by_class_name(locators["search_button"][1]).click()
 
     def run(self, report_name):
-        pass
+        self.driver.find_element_by_xpath("//td[text=()='{0}']/../td[3]/a".format(report_name)).click()
 
-    
+    def delete_report(self, report_name):
+        driver = self.driver
+
+        self.wait.until(EC.presence_of_element_located((By.XPATH, "//td[text()='{0}'/..//input]".format(report_name)))).click()
+        driver.find_element_by_id(locators["delete_button"][1]).click()
+
+        self.wait.until(EC.visibility_of_element_located((By.ID, locators["dialog_delete_button"][1]))).click()
