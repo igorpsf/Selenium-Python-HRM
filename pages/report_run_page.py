@@ -7,9 +7,8 @@ from pages.base_page import BasePage
 
 class ReportRunPage(BasePage):
     def __init__(self, driver):
-        self.driver = driver
+        super(ReportRunPage, self).__init__(driver)
         self.page_url = "http://hrm-online.portnov.com/synfony/web/index.html"
-        self.wait = WebDriverWait(self.driver, 2)
 
     def get_report_header(self):
         return self.wait.until(EC.presence_of_element_located((By.CSS_SELECTOR)))
